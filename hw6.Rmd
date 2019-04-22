@@ -1,0 +1,57 @@
+---
+title: 'Homework #6'
+author: "Jacob Shoemaker; jshoemaker2249"
+date: "4/21/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+bis <- readxl::read_excel("KIB - Best in Show (public).xlsx", sheet = "Best in show", skip = 6)
+bis[bis == "no data"] <- NA
+bis$breed <- bis$...1
+bis$type <- bis$`American Kennel Club group`
+bis$size <- bis$...46
+bis$popularity <- bis$`US. American Kennel Club registrations 2011, pure breeds only`
+bis$intelligence <- bis$...10
+library(dplyr)
+dat <- bis %>% select("breed", "type", "size", "popularity", "intelligence")
+dat <- dat[1:172, ]
+head(dat)
+```
+
+
+This dataframe contains all the necessary data (except datadog score) for each breed. To add datadog score...
+
+
+```{r}
+bis_fs <- readxl::read_excel("KIB - Best in Show (public).xlsx", sheet = "Best in show full sheet", skip = 3)
+bis_fs$breed <- bis_fs$`Dog breed`
+bis_fs$score <- bis_fs$...5
+dat1 <- bis_fs %>% select("breed", "score")
+#Drop the columns that are not dogs
+dat1 <- dat1[-c(134, 144), ]
+final <- merge(dat, dat1)
+final$size <- as.factor(final$size)
+final$type <- as.factor(final$type)
+final$intelligence <- as.factor(final$intelligence)
+```
+
+```{r}
+library(ggplot2)
+library(ggrepel)
+ggplot(final, aes(x=score, y= popularity, color=type, size=size, shape=intelligence)) + geom_point() + geom_text_repel(label=final$breed, size = 2) + geom_vline(xintercept = 2.5) + geom_hline(yintercept = 75) + ggtitle("Top Dogs") + ylab("Popularity") + xlab("Datadog Score")
+```
+
+
+Top left quadrant: overrated dogs
+
+
+Top right quadrant: high performing and highly popular dogs
+
+Bottom left quadrant: below-average dogs 
+
+Bottom right quadrant: underrated dogs
