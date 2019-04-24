@@ -38,20 +38,20 @@ final <- merge(dat, dat1)
 final$size <- as.factor(final$size)
 final$type <- as.factor(final$type)
 final$intelligence <- as.factor(final$intelligence)
+final$sizes <- factor(final$size, levels = c("small", "medium", "large"))
 ```
 
 ```{r}
 library(ggplot2)
 library(ggrepel)
-ggplot(final, aes(x=score, y= popularity, color=type, size=size, shape=intelligence)) + geom_point() + geom_text_repel(label=final$breed, size = 2) + geom_vline(xintercept = 2.5) + geom_hline(yintercept = 75) + ggtitle("Top Dogs") + ylab("Popularity") + xlab("Datadog Score")
+ggplot(final, aes(x=score, y= popularity, color=type, size=size, shape=intelligence)) + geom_point() + geom_text_repel(label=final$breed, size = 2) + geom_vline(xintercept = 2.5) + geom_hline(yintercept = 75) + ggtitle("Top Dogs") + ylab("Popularity") + xlab("Datadog Score") 
 ```
 
 
-Top left quadrant: overrated dogs
+Top left quadrant: Inexplicably Overrated
 
+Top right quadrant: Hot Dogs!
 
-Top right quadrant: high performing and highly popular dogs
+Bottom left quadrant: The Rightly Ignored
 
-Bottom left quadrant: below-average dogs 
-
-Bottom right quadrant: underrated dogs
+Bottom right quadrant: Overlooked Treasures!
